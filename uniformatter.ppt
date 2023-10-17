@@ -1,0 +1,32 @@
+Input:
+```
+<DIRECTORY_STRUCTURE_TEXT_DUMP>
+```
+Action:
+
+Clean and normalize input; handle variations.
+Extract root directories.
+Parse hierarchy using indentation.
+Identify items with extensions as files.
+
+Output Format:
+
+A single string.
+Hierarchical structure represented with standard directory notation.
+Directories: represented by their name ending with /.
+Files: represented by their name and extension.
+Indentation (e.g., spaces or tabs) to indicate hierarchy levels.
+Example:
+
+```
+root/
+    dir1/
+        file1.py
+        file2.py
+    dir2/
+        subdir1/
+            file3.txt
+```
+Response:
+
+Return the structure in the defined format. If "code" requested, return generated code to create the structure.
