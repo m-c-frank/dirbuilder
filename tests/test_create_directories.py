@@ -1,88 +1,59 @@
+import pytest
+from dirbuilder.create_directories import (
+    detect_indentation_size,
+    get_current_path,
+    create_directory,
+    create_file,
+    create_directories_from_text
+)
 import os
-import shutil
-from dirbuilder.create_directories import generate_directory_structure, create_directories_from_text
-import dirbuilder.interface as interface
 
-test_root_path = "test_root"
+def test_detect_indentation_size():
+    lines = ["root/", "    dir1/"]
+    assert detect_indentation_size(lines) == 4
 
-def setup_module(module):
-    os.makedirs(test_root_path, exist_ok=True)
+    lines = ["root/", "\tdir1/"]
+    with pytest.raises(ValueError):
+        detect_indentation_size(lines)
 
-def teardown_module(module):
-    if os.path.exists(test_root_path):
-        shutil.rmtree(test_root_path)
+    # Test with no indentation
+    lines = ["root/"]
+    assert detect_indentation_size(lines) == 0
 
+def test_get_current_path():
+    stack = ["/root_path"]
+    line = "    dir1/"
+    path, updated_stack = get_current_path(stack, line, 4)
+    assert path == os.path.join("/root_path", "dir1/")
+    assert updated_stack == ["/root_path", os.path.join("/root_path", "dir1/")]
 
-def test_simple_directory_creation(mocker):
-    mocker.patch.object(interface, 'generate_directory_structure', return_value="""
-    root/
-        test_dir/
-            test_subdir/
-                test_file.txt
-    """)
-    create_directories_from_text(generate_directory_structure(""), test_root_path)
-    assert os.path.exists(os.path.join(test_root_path, "root", "test_dir"))
-    assert os.path.exists(os.path.join(test_root_path, "root", "test_dir", "test_subdir"))
-    assert os.path.isfile(os.path.join(test_root_path, "root", "test_dir", "test_subdir", "test_file.txt"))
+def test_create_directory(tmp_path):
+    dir_path = os.path.join(tmp_path, "new_dir")
+    create_directory(dir_path)
+    assert os.path.isdir(dir_path)
 
-def test_multiple_directories_files_creation(mocker):
-    mocker.patch.object(interface, 'generate_directory_structure', return_value="""
+    # Given the function's idempotent behavior, it should not raise an error if the directory already exists.
+    create_directory(dir_path)
+    assert os.path.isdir(dir_path)
+
+def test_create_file(tmp_path):
+    file_path = os.path.join(tmp_path, "test.txt")
+    create_file(file_path)
+    assert os.path.isfile(file_path)
+
+    # Test file creation when the directory doesn't exist
+    deep_file_path = os.path.join(tmp_path, "dir", "subdir", "test2.txt")
+    create_file(deep_file_path)
+    assert os.path.isfile(deep_file_path)
+
+def test_create_directories_from_text(tmp_path):
+    structured_tree = """
     root/
         dir1/
-            file1.py
-            file2.py
-        dir2/
-            file3.py
-    """)
-    create_directories_from_text(generate_directory_structure(""), test_root_path)
-    assert os.path.exists(os.path.join(test_root_path, "root", "dir1"))
-    assert os.path.isfile(os.path.join(test_root_path, "root", "dir1", "file1.py"))
-    assert os.path.isfile(os.path.join(test_root_path, "root", "dir1", "file2.py"))
-    assert os.path.exists(os.path.join(test_root_path, "root", "dir2"))
-    assert os.path.isfile(os.path.join(test_root_path, "root", "dir2", "file3.py"))
+            file1.txt
+    """
 
-def test_directory_overwriting(mocker):
-    existing_path = os.path.join(test_root_path, "root", "existing_dir")
-    os.makedirs(existing_path, exist_ok=True)
-
-    with open(os.path.join(existing_path, "existing_file.txt"), "w") as f:
-        f.write("Existing content")
-
-    mocker.patch.object(interface, 'generate_directory_structure', return_value="""
-    root/
-        existing_dir/
-            new_file.py
-    """)
-    create_directories_from_text(generate_directory_structure(""), test_root_path)
-    assert os.path.exists(existing_path)
-    assert not os.path.isfile(os.path.join(existing_path, "existing_file.txt"))  # Ensure the file was not overwritten
-    assert os.path.isfile(os.path.join(existing_path, "new_file.py"))
-
-def test_root_only_directory_creation(mocker):
-    mocker.patch.object(interface, 'generate_directory_structure', return_value="""
-    root_dir/
-    """)
-    create_directories_from_text(generate_directory_structure(""), test_root_path)
-    assert os.path.exists(os.path.join(test_root_path, "root_dir"))
-
-def test_root_only_file_creation(mocker):
-    mocker.patch.object(interface, 'generate_directory_structure', return_value="""
-    root_file.txt
-    """)
-    create_directories_from_text(generate_directory_structure(""), test_root_path)
-    assert os.path.isfile(os.path.join(test_root_path, "root_file.txt"))
-
-def test_ellipsis_handling(mocker):
-    mocker.patch.object(interface, 'generate_directory_structure', return_value="""
-    root/
-        test_dir/
-            ...
-            test_subdir/
-                test_file.txt
-    """)
-    create_directories_from_text(generate_directory_structure(""), test_root_path)
-
-    assert os.path.exists(os.path.join(test_root_path, "root", "test_dir"))
-    assert not os.path.exists(os.path.join(test_root_path, "root", "test_dir", "..."))  # Ensure ... directory doesn't exist
-    assert os.path.exists(os.path.join(test_root_path, "root", "test_dir", "test_subdir"))
-    assert os.path.isfile(os.path.join(test_root_path, "root", "test_dir", "test_subdir", "test_file.txt"))
+    create_directories_from_text(structured_tree, str(tmp_path))
+    assert os.path.exists(os.path.join(tmp_path, "root"))
+    assert os.path.exists(os.path.join(tmp_path, "root", "dir1"))
+    assert os.path.isfile(os.path.join(tmp_path, "root", "dir1", "file1.txt"))

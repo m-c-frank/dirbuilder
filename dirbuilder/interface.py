@@ -43,7 +43,7 @@ def generate_directory_structure(plain_text_tree, template_filename="uniformatte
         template = file.read()
     
     # Embed the input instruction into the template
-    prompt = template.replace("<DIRECTORY_STRUCTURE_TEXT_DUMP", plain_text_tree)
+    prompt = template.replace("<DIRECTORY_STRUCTURE_TEXT_DUMP>", plain_text_tree)
     
     directory_representation = get_structure_representation(prompt)
 
