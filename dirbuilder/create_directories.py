@@ -1,4 +1,5 @@
 import os
+import argparse
 
 def detect_indentation_size(lines):
     # Detect the first indented line
@@ -19,7 +20,6 @@ def get_current_path(stack, line, indentation_size):
     current_path = os.path.join(stack[-1], line.strip())
     stack.append(current_path)
     return current_path, stack
-
 
 def create_directory(dir_path):
     if not os.path.exists(dir_path):
@@ -42,3 +42,18 @@ def create_directories_from_text(structured_tree, base_path):
             create_directory(current_path)
         else:
             create_file(current_path)
+
+def main():
+    parser = argparse.ArgumentParser(description="Convert a structured text file into a directory structure.")
+    parser.add_argument("input_file", type=str, help="Path to the structured text file.")
+    parser.add_argument("output_dir", type=str, help="Base path where the directory structure should be created.")
+    
+    args = parser.parse_args()
+
+    with open(args.input_file, 'r') as f:
+        structured_tree = f.read()
+
+    create_directories_from_text(structured_tree, args.output_dir)
+
+if __name__ == "__main__":
+    main()
