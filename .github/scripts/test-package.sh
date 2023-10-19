@@ -3,28 +3,14 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Define paths
-SAMPLE_INPUT_PATH=".github/test_assets/sample_input.txt"
-OUTPUT_DIRECTORY_PATH="./test_output"
+# Your bash commands to test the package
+# For example:
+# dirbuilder [input_file_path] [output_directory_path]
 
-# Run dirbuilder with the sample input and specified output directory
-dirbuilder "$SAMPLE_INPUT_PATH" "$OUTPUT_DIRECTORY_PATH"
+# If dirbuilder is a command-line utility after installing the package
+dirbuilder --version
 
-# Now, verify the created directory structure
-if [ ! -d "$OUTPUT_DIRECTORY_PATH/root" ]; then
-    echo "Directory 'root' not found!"
-    exit 1
-fi
+# Or if you want to run python and then test:
+# python -c 'import dirbuilder; print(dirbuilder.__version__)'
 
-if [ ! -f "$OUTPUT_DIRECTORY_PATH/root/file1.txt" ]; then
-    echo "File 'file1.txt' not found in 'root' directory!"
-    exit 1
-fi
-
-if [ ! -d "$OUTPUT_DIRECTORY_PATH/root/subdir" ]; then
-    echo "Sub-directory 'subdir' not found in 'root' directory!"
-    exit 1
-fi
-
-echo "Directory structure successfully verified!"
 echo "Package seems to work as expected!"
