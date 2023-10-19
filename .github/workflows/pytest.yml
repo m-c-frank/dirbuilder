@@ -2,6 +2,9 @@ name: Run pytest
 
 on:
   pull_request:
+    paths-ignore:
+      - '**.md' # this will ignore changes in all markdown files
+      - '.github/**'
 
 jobs:
   test:
