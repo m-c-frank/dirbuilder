@@ -1,0 +1,3 @@
+main_directory/
+    sample_file.txt
+    sub_directory/
