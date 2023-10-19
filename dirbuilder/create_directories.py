@@ -57,11 +57,9 @@ def create_directories_from_text(structured_tree, base_path):
             create_directory(current_path)
         else:
             create_file(current_path)
-        
         # Compare expected directory or file creation with the actual result and log discrepancies
         if logging.getLogger().getEffectiveLevel() == logging.DEBUG:
             if line.endswith('/') and not os.path.isdir(current_path):
                 logging.debug(f"Expected to create directory: {current_path} but failed.")
             elif not line.endswith('/') and not os.path.isfile(current_path):
                 logging.debug(f"Expected to create file: {current_path} but failed.")
-
