@@ -9,7 +9,6 @@ setup(
     },
     install_requires=[
         'openai',
-        'dotenv'
     ],
     url='https://github.com/m-c-frank/dirbuilder',
     license='GOS License',
