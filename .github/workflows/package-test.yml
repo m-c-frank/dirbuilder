@@ -26,4 +26,4 @@ jobs:
         pip install .
 
     - name: Test package with bash script
-      run: ./.github/scripts/test-package.sh
+      run: ./.github/scripts/test-package.sh -h
