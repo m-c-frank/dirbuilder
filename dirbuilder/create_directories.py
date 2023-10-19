@@ -16,7 +16,10 @@ def detect_indentation_size(lines):
 
 def get_current_path(stack, line, indentation_size):
     print(f"Processing line: {line}")
-    level = int((len(line) - len(line.lstrip())) / indentation_size)
+    if indentation_size == 0:  # Handle no indentation case
+        level = 0
+    else:
+        level = int((len(line) - len(line.lstrip())) / indentation_size)
     while len(stack) > level + 1:
         print(f"Popping from stack: {stack[-1]}")
         stack.pop()
@@ -24,6 +27,7 @@ def get_current_path(stack, line, indentation_size):
     stack.append(current_path)
     print(f"Current path set to: {current_path}")
     return current_path, stack
+
 
 def create_directory(dir_path):
     print(f"Creating directory: {dir_path}")
