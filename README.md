@@ -1,14 +1,14 @@
 # dirbuilder
 
-`dirbuilder` is a versatile utility that translates a structured text representation into a real-world directory structure. If you're conceptualizing a new project, organizing a set of files, or laying out a precise folder hierarchy, `dirbuilder` simplifies the task, turning your text depiction into an actual directory structure.
+`dirbuilder` is a tool that effortlessly translates a structured text representation into an actual directory structure, streamlining the process of laying out projects, organizing files, and creating folder hierarchies. 
 
 ## Features
 
-- Convert a textual representation into directories and files.
-- Auto-detects indentation to discern directory levels.
-- Allows for simultaneous directory and file creation from the text blueprint.
-- Gracefully manages spaces and nested hierarchies.
-- User-friendly command-line interface.
+- Transforms textual representations into directories and files.
+- Intelligently detects indentation to decipher directory levels.
+- Allows for the simultaneous creation of directories and files from text blueprints.
+- Handles spaces and nested hierarchies with ease.
+- Provides a simple command-line interface.
 
 ## Directory Structure
 
@@ -16,76 +16,71 @@
 .
 ├── LICENCE.md
 ├── README.md
-├── __pycache__
-│   ├── various cached files
 ├── dirbuilder
 │   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── various cached files
+│   ├── __main__.py
 │   ├── create_directories.py
-│   └── interface.py
+│   ├── interface.py
+│   └── uniformatter.ppt
+├── requirements.txt
 ├── setup.py
-├── tests
-│   ├── __init__.py
-│   ├── __pycache__
-│   │   ├── various cached files
-│   ├── test_create_directories.py
-│   └── test_interface.py
-└── uniformatter.ppt
+└── tests
+    ├── __init__.py
+    ├── test_create_directories.py
+    └── test_interface.py
 ```
 
-## Setup
+## Installation
 
-1. Clone the repository:
+To install `dirbuilder`, simply use pip:
 
-    ```bash
-    git clone [repository_url]
-    cd dirbuilder
-    ```
+```bash
+pip install dirbuilder
+```
 
-2. Install the required packages:
+You can also install the latest version directly from the repository:
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+pip install git+https://github.com/m-c-frank/dirbuilder.git
+```
 
 ## Usage
 
-1. Create a structured text file that mirrors your desired directory layout. Designate directories with a `/` at the end, and use indentation to indicate nesting. Here's an example:
+1. Draft a structured text file reflecting your desired directory layout. Mark directories with a `/` at the end and use indentation to signify nesting:
 
-    ```
-    project/
-      images/
-      README.md
-    ```
+```bash
+project/
+    images/
+        README.md
+```
 
-2. Run the `dirbuilder` script:
+2. Use the `dirbuilder` tool:
 
-   ```bash
-   python -m dirbuilder [input_file_path] [output_directory_path]
-   ```
+```bash
+dirbuilder [input_file_path] [output_directory_path]
+```
 
-Using the example above, a `project` directory will be made, containing an `images` subdirectory and a `README.md` file.
+This command will create a `project` directory containing an `images` subdirectory and a `README.md` file inside it.
 
 ## Related Tools
 
 <!--START_TOKEN-->
-**Note Utilities Ecosystem**: A suite of tools designed to streamline and enhance your note-taking and information processing workflows.
+**Note Utilities Ecosystem**: A suite of tools crafted to enrich your note-taking and information management workflows.
 
-- **[workflowlibrary](https://github.com/m-c-frank/workflowlibrary)** - Centralizes and synchronizes the "Related Tools" section across the ecosystem.
-- **[noteutilsyncer](https://github.com/m-c-frank/noteutilsyncer)** - A centralized tool that automates the synchronization of the "Related Tools" section across READMEs in the noteutils ecosystem.
-- **[conceptsplitter](https://github.com/m-c-frank/conceptsplitter)** - Extract atomic concepts from a given text using the OpenAI API.
-- **[textdownloader](https://github.com/m-c-frank/textdownloader)** - A browser extension to automatically generate text dumps for processing.
+- **[workflowlibrary](https://github.com/m-c-frank/workflowlibrary)**: Centralizes and synchronizes the "Related Tools" section across the ecosystem.
+- **[noteutilsyncer](https://github.com/m-c-frank/noteutilsyncer)**: A tool that keeps the "Related Tools" section of READMEs in sync across the ecosystem.
+- **[conceptsplitter](https://github.com/m-c-frank/conceptsplitter)**: Uses the OpenAI API to extract concise concepts from text.
+- **[textdownloader](https://github.com/m-c-frank/textdownloader)**: A browser extension for convenient text extraction.
 <!--END_TOKEN-->
 
 ## Contributing
 
-Contributions to the dirbuilder project or the note utilities ecosystem are welcome. If you have ideas for improvements or new features, please feel free to submit issues, suggestions, or pull requests in this repository or contact me!
+If you're interested in contributing to `dirbuilder` or the larger Note Utilities ecosystem, we're eager to collaborate. Raise issues, suggest enhancements, or submit pull requests. Feel free to reach out directly with any inquiries!
 
 ## License
 
-The dirbuilder project is open-source and licensed under the [GOS License](https://github.com/m-c-frank/textdownloader/blob/main/LICENCE.md).
+`dirbuilder` is an open-source endeavor licensed under the [GOS License](https://github.com/m-c-frank/dirbuilder/blob/main/LICENCE.md).
 
 ## Credits
 
-The dirbuidlder project is developed and maintained by [Martin Christoph Frank](https://github.com/m-c-frank). If you have any questions or need assistance, please contact [martin7.frank7@gmail.com](martin7.frank7@gmail.com).
+`dirbuilder` was developed and is maintained by [Martin Christoph Frank](https://github.com/m-c-frank). For questions or assistance, please email [martin7.frank7@gmail.com](martin7.frank7@gmail.com).
