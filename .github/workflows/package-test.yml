@@ -1,0 +1,29 @@
+name: Package Test
+
+on: [push, pull_request]
+
+jobs:
+  test-package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set dummy OpenAI API key
+      run: echo "OPENAI_API_KEY=dummy_key" >> $GITHUB_ENV
+      
+    - name: Install dependencies
+      run: |
+        pip install .
+
+    - name: Test package with bash script
+      run: ./.github/scripts/test-package.sh
