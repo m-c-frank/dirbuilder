@@ -4,6 +4,10 @@ setup(
     name='dirbuilder',
     version='0.2',
     packages=find_packages(),
+    include_package_data=True,  # This line is important
+    package_data={
+        'dirbuilder': ['uniformatter.ppt'],  # Include our .ppt file
+    },
     entry_points={
         'console_scripts': ['dirbuilder=dirbuilder.__main__:main'],
     },
