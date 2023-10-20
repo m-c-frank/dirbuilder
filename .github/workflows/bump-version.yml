@@ -40,6 +40,11 @@ jobs:
     - name: Bump the version
       run: bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
 
+    - name: Check token scopes
+      run: |
+        RESPONSE=$(curl -s -I -H "Authorization: token $GH_TOKEN" https://api.github.com/user)
+        echo "$RESPONSE" | grep X-OAuth-Scopes
+    
     - name: Push changes to the new branch
       run: git push --set-upstream origin $NEW_BRANCH
 
