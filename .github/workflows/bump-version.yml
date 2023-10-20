@@ -33,22 +33,24 @@ jobs:
         git config --local user.name "GitHub Action"
         git config push.default current
 
-    - name: Create new branch for version bump
+    - name: Extract old version
       run: |
-            NEW_BRANCH="version-bump-$(date +'%Y%m%d%H%M%S')"
-            git checkout -b $NEW_BRANCH
-            echo "NEW_BRANCH=$NEW_BRANCH" >> $GITHUB_ENV
-        
+        OLD_VERSION=$(bump2version --dry-run --list patch | grep current_version | sed -r s,"^.*=",,)
+        echo "OLD_VERSION=$OLD_VERSION" >> $GITHUB_ENV
+
     - name: Bump the version
       run: bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
 
-    - name: Push changes with verbose logging
-      run: git push --set-upstream origin $NEW_BRANCH -v
-        
-    - name: Check if PR exists and create if not
+    - name: Extract new version
       run: |
-            PR_EXISTS=$(gh pr list --base "main" --head "$NEW_BRANCH" | wc -l)
-            if [ "$PR_EXISTS" -eq "0" ]; then
-            gh pr create --title "Version Bump" --body "Automated version bump after merge to main." --head "$NEW_BRANCH" --base "main"
-            fi
-  
+        NEW_VERSION=$(bump2version --dry-run --list patch | grep current_version | sed -r s,"^.*=",,)
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+    - name: Create new branch for version bump
+      run: |
+        BRANCH_NAME="version-$OLD_VERSION-to-$NEW_VERSION"
+        git checkout -b $BRANCH_NAME
+        echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+    - name: Push changes with verbose logging
+      run: git push --
