@@ -1,47 +1,41 @@
-name: Bump Version and Publish to PyPI
+name: Version Bump and PyPi Publish
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types:
-      - closed
 
 env:
   GH_TOKEN: ${{ secrets.GH_PAT }}
 
 jobs:
-  version-bump-and-publish:
-    if: github.event.pull_request.merged == true
+  bump-version:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        token: ${{ env.GH_TOKEN }}
+        fetch-depth: 0  # Important for fetching all tags
 
-    - name: Set up Python
+    - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.11
+        python-version: '3.x'
 
-    - name: Install bump2version
+    - name: Install Bump2Version
       run: pip install bump2version
 
-    - name: Bump version and push tag
+    - name: Bump version and create pull request
       run: |
-        git config user.email "action@github.com"
-        git config user.name "GitHub Action"
-        git checkout main  # Ensure we're on the main branch
-        bump2version patch  # or 'minor' or 'major', based on your preference
-        git push "https://${{ env.GH_TOKEN }}@github.com/${{ github.repository }}" main
-        git push "https://${{ env.GH_TOKEN }}@github.com/${{ github.repository }}" --tags
+        NEW_BRANCH="version-bump-$(date +'%Y%m%d%H%M%S')"
+        git checkout -b $NEW_BRANCH
+        bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
+        git push origin $NEW_BRANCH
 
-    - name: Build and publish to PyPI
-      if: startsWith(github.ref, 'refs/tags')
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: |
-        pip install twine wheel
-        python setup.py sdist bdist_wheel
-        twine upload dist/*
+        # Create PR
+        PR_EXISTS=$(gh pr list --base main --head $NEW_BRANCH | wc -l)
+        if [ "$PR_EXISTS" -eq "0" ]; then
+          gh pr create --title "Version Bump" --body "Automated version bump after merge to main." --head $NEW_BRANCH --base main
+        fi
