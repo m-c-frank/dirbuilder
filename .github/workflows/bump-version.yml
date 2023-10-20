@@ -31,22 +31,19 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git config push.default current
 
     - name: Create new branch for version bump
       run: |
         NEW_BRANCH="version-bump-$(date +'%Y%m%d%H%M%S')"
         git checkout -b $NEW_BRANCH
-
+      
     - name: Bump the version
       run: bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
 
-    - name: Check token scopes
-      run: |
-        curl -s -I -H "Authorization: token $GH_TOKEN" https://api.github.com/user | awk '/X-OAuth-Scopes:/ { print $2 }'
+    - name: Push changes with verbose logging
+      run: git push --set-upstream origin $NEW_BRANCH -v
     
-    - name: Push changes to the new branch
-      run: git push --set-upstream origin $NEW_BRANCH
-
     - name: Check if PR exists and create if not
       run: |
         PR_EXISTS=$(gh pr list --base main --head $NEW_BRANCH | wc -l)
