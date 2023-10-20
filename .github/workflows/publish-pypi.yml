@@ -8,12 +8,22 @@ on:
       - 'setup.py'
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
 
-    - name: Set up Python
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Check if version changed
+      run: |
+        VERSION_CHANGED=$(git diff HEAD~1 -- 'setup.py' | grep 'version=')
+        if [[ -z "$VERSION_CHANGED" ]]; then
+          echo "Version in setup.py did not change. Exiting..."
+          exit 1
+        fi
+
+    - name: Setup Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
@@ -23,10 +33,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
 
-    - name: Build and publish
+    - name: Build and publish to PyPi
       env:
-        PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         python setup.py sdist bdist_wheel
-        twine upload dist/* -u $PYPI_USERNAME -p $PYPI_PASSWORD
+        twine upload dist/*
