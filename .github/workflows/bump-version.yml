@@ -1,4 +1,4 @@
-name: Version Bump and PyPi Publish
+name: Version Bump
 
 on:
   push:
@@ -27,14 +27,24 @@ jobs:
     - name: Install Bump2Version
       run: pip install bump2version
 
-    - name: Bump version and create pull request
+    - name: Configure Git User
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Create new branch for version bump
       run: |
         NEW_BRANCH="version-bump-$(date +'%Y%m%d%H%M%S')"
         git checkout -b $NEW_BRANCH
-        bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
-        git push origin $NEW_BRANCH
 
-        # Create PR
+    - name: Bump the version
+      run: bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
+
+    - name: Push changes to the new branch
+      run: git push origin $NEW_BRANCH
+
+    - name: Check if PR exists and create if not
+      run: |
         PR_EXISTS=$(gh pr list --base main --head $NEW_BRANCH | wc -l)
         if [ "$PR_EXISTS" -eq "0" ]; then
           gh pr create --title "Version Bump" --body "Automated version bump after merge to main." --head $NEW_BRANCH --base main
