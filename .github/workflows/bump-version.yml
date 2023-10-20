@@ -22,8 +22,12 @@ jobs:
         run: pip install bump2version
 
       - name: Bump version and push tag
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          bump2version patch  # or 'minor' or 'major', based on your preference
-          git push && git push --tags
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
+            bump2version patch  # or 'minor' or 'major', based on your preference
+            git push && git push --tags
+  
