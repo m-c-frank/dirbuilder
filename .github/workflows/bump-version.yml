@@ -42,8 +42,7 @@ jobs:
 
     - name: Check token scopes
       run: |
-        RESPONSE=$(curl -s -I -H "Authorization: token $GH_TOKEN" https://api.github.com/user)
-        echo "$RESPONSE" | grep X-OAuth-Scopes
+        curl -s -I -H "Authorization: token $GH_TOKEN" https://api.github.com/user | awk '/X-OAuth-Scopes:/ { print $2 }'
     
     - name: Push changes to the new branch
       run: git push --set-upstream origin $NEW_BRANCH
