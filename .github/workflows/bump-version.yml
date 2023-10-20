@@ -35,18 +35,20 @@ jobs:
 
     - name: Create new branch for version bump
       run: |
-        NEW_BRANCH="version-bump-$(date +'%Y%m%d%H%M%S')"
-        git checkout -b $NEW_BRANCH
-      
+            NEW_BRANCH="version-bump-$(date +'%Y%m%d%H%M%S')"
+            git checkout -b $NEW_BRANCH
+            echo "NEW_BRANCH=$NEW_BRANCH" >> $GITHUB_ENV
+        
     - name: Bump the version
       run: bump2version patch  # Adjust 'patch', 'minor', or 'major' based on your preference
 
     - name: Push changes with verbose logging
       run: git push --set-upstream origin $NEW_BRANCH -v
-    
+        
     - name: Check if PR exists and create if not
       run: |
-        PR_EXISTS=$(gh pr list --base main --head $NEW_BRANCH | wc -l)
-        if [ "$PR_EXISTS" -eq "0" ]; then
-          gh pr create --title "Version Bump" --body "Automated version bump after merge to main." --head $NEW_BRANCH --base main
-        fi
+            PR_EXISTS=$(gh pr list --base "main" --head "$NEW_BRANCH" | wc -l)
+            if [ "$PR_EXISTS" -eq "0" ]; then
+            gh pr create --title "Version Bump" --body "Automated version bump after merge to main." --head "$NEW_BRANCH" --base "main"
+            fi
+  
